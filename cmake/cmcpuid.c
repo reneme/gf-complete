@@ -22,10 +22,11 @@ typedef enum instructions_available_e
 {
   supports_STANDARD = 1,
   supports_SSE3     = 2,
-  supports_SSE41    = 3,
-  supports_SSE42    = 4,
-  supports_AVX1     = 5,
-  supports_AVX2     = 6
+  supports_SSSE3    = 3,
+  supports_SSE41    = 4,
+  supports_SSE42    = 5,
+  supports_AVX1     = 6,
+  supports_AVX2     = 7
 } instructions_available;
 
 
@@ -35,6 +36,7 @@ instructions_available getSupportedInstructionSet() {
   enum instructions_available_eax0000_0001h_e
   {
     probe01_SSE_3   = 1<<0,
+    probe01_SSSE_3  = 1<<9,
     probe01_SSE_4_1 = 1<<19,
     probe01_SSE_4_2 = 1<<20,
     probe01_AVX1    = 1<<28
@@ -74,10 +76,20 @@ instructions_available getSupportedInstructionSet() {
     printf("AVX1 SUPPORTED\n");
     return supports_AVX1;
   }
-  else if(supported & probe01_SSE_4_1) // we have at least SSE4.1
+  else if(supported & probe01_SSE_4_2) // we have at least SSE4.2
   {
     printf("SSE4.2 SUPPORTED\n");
     return supports_SSE42;
+  }
+  else if(supported & probe01_SSE_4_1) // we have at least SSE4.1
+  {
+    printf("SSE4.1 SUPPORTED\n");
+    return supports_SSE41;
+  }
+  else if(supported & probe01_SSSE_3)
+  {
+    printf("SSSE3 SUPPORTED");
+    return supports_SSSE3;
   }
   else if(supported & probe01_SSE_3)
   {
@@ -110,6 +122,9 @@ int main(void)
       break;
     case supports_SSE41:
       printf("SSE41\n");
+      break;
+    case supports_SSSE3:
+      printf("SSSE3\n");
       break;
     case supports_SSE3:
       printf("SSE3\n");
