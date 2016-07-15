@@ -127,7 +127,7 @@ int main(int argc, char **argv)
   c = (gf_general_t *) malloc(sizeof(gf_general_t));
   d = (gf_general_t *) malloc(sizeof(gf_general_t));
 
-#if HAVE_POSIX_MEMALIGN
+#ifdef HAVE_POSIX_MEMALIGN
   if (posix_memalign((void **) &ra, 16, sizeof(char)*REGION_SIZE))
     ra = NULL;
   if (posix_memalign((void **) &rb, 16, sizeof(char)*REGION_SIZE))
