@@ -24,10 +24,13 @@ macro( CheckCPUID )
       message(FATAL_ERROR "Failed to compile CPUID check binary")
     endif()
 
-    set(CPUID_CACHED TRUE CACHE INTERNAL "Whether CPUID has run")
+    try_run(PCLMUL_FLAG PCLMUL_COMPILE_RESULT
+            ${CMAKE_BINARY_DIR}
+            ${CMAKE_SOURCE_DIR}/cmake/cpuid_pclmul.c)
 
-    set(SUPPORT_dbg TRUE CACHE INTERNAL "Support for debug build")
-    set(SUPPORT_std TRUE CACHE INTERNAL "Support for standard build")
+    if(NOT ${PCLMUL_COMPILE_RESULT})
+      message(FATAL_ERROR "Failed to compile CPUID PCLMUL check binary")
+    endif()
 
     set(CPUID_CACHED TRUE CACHE INTERNAL "Whether CPUID has run")
 
@@ -55,6 +58,12 @@ macro( CheckCPUID )
       message(STATUS "CPU supports SSE4.2")
     else()
       message(STATUS "CPU does not support SSE4.2")
+    endif()
+    if(${PCLMUL_FLAG} GREATER 0)
+      set(SUPPORT_sse4_pclmul TRUE CACHE INTERNAL "Local CPU support for SSE4_PCLMUL")
+      message(STATUS "CPU supports SSE4_PCLMUL")
+    else()
+      message(STATUS "CPU does not support SSE4_PCLMUL")
     endif()
     if(${CPUID_FLAG} GREATER 5)
       set(SUPPORT_avx1 TRUE CACHE INTERNAL "Local CPU support for AVX1")
