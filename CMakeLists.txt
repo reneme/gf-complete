@@ -6,7 +6,11 @@ set (GFC_MAJOR_VERSION 1)
 set (GFC_MINOR_VERSION 0)
 set (GFC_PATCH_VERSION 0)
 
+set (CMAKE_MODULE_PATH  "${CMAKE_SOURCE_DIR}/cmake/modules")
+
 option (BUILD_TESTS "Build the ${PROJECT_NAME} test binaries" OFF)
+option (WITH_SSE    "Enables SSEx SIMD extensions"            ON)
+option (WITH_AVX    "Enables AVXx SIMD extensions"            OFF)
 
 set (GFC_VERSION_STRING
      "${GFC_MAJOR_VERSION}.${GFC_MINOR_VERSION}.${GFC_PATCH_VERSION}")
@@ -14,7 +18,76 @@ set (GFC_VERSION_STRING
 message (STATUS "Running CMake version ${CMAKE_VERSION}")
 message (STATUS "Running CMake for ${PROJECT_NAME} ${DVAULT_VERSION_STRING}")
 
+# gather information about CPU's SIMD features
+include (GetCpuFeatures)
+set (SIMD_COMPILER_FLAGS "")
+
+if (WITH_SSE)
+  if (SUPPORTS_SSE)
+    message (STATUS "Enabling SSE support")
+    set (HAVE_SSE "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -DINTEL_SSE=yes -msse)
+  endif (SUPPORTS_SSE)
+  if (SUPPORTS_SSE2)
+    message (STATUS "Enabling SSE 2 support")
+    set (HAVE_SSE2 "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -DINTEL_SSE2=yes -msse2)
+  endif (SUPPORTS_SSE2)
+  if (SUPPORTS_SSE3)
+    message (STATUS "Enabling SSE 3 support")
+    set (HAVE_SSE3 "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -DINTEL_SSE3=yes -msse3)
+  endif (SUPPORTS_SSE3)
+  if (SUPPORTS_SSSE3)
+    message (STATUS "Enabling SSSE 3 support")
+    set (HAVE_SSSE3 "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -DINTEL_SSSE3=yes -mssse3)
+  endif (SUPPORTS_SSSE3)
+  if (SUPPORTS_SSE41)
+    message (STATUS "Enabling SSE 4.1 support")
+    set (HAVE_SSE4 "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -DINTEL_SSE4=yes -msse4 -msse4.1)
+    set (HAVE_SSE4_1 "yes")
+  endif (SUPPORTS_SSE41)
+  if (SUPPORTS_SSE42)
+    message (STATUS "Enabling SSE 4.2 support")
+    set (HAVE_SSE4 "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -DINTEL_SSE4=yes -msse4 -msse4.2)
+    set (HAVE_SSE4_2 "yes")
+  endif (SUPPORTS_SSE42)
+  if (SUPPORTS_PCLMUL)
+    message (STATUS "Enabling SSE 4 PCLMUL support")
+    set (HAVE_SSE4_PCLMUL "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -DINTEL_SSE4_PCLMUL=yes -mpclmul)
+  endif (SUPPORTS_PCLMUL)
+else (WITH_SSE)
+  message (STATUS "Disabling SSE instruction set altogether")
+endif (WITH_SSE)
+
+if (WITH_AVX)
+  if (SUPPORTS_AVX)
+    message (STATUS "Enabling AVX 1 support")
+    set (HAVE_AVX "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -mavx)
+  endif (SUPPORTS_AVX)
+  if (SUPPORTS_AVX2)
+    message (STATUS "Enabling AVX 2 support")
+    set (HAVE_AVX2 "yes")
+    set (SIMD_COMPILER_FLAGS ${SIMD_COMPILER_FLAGS} -mavx2)
+  endif (SUPPORTS_AVX2)
+else (WITH_AVX)
+  message (STATUS "Disabling AVX instruction set altogether")
+endif (WITH_AVX)
+
+# gather information about memory alignment functions
+include (CheckFunctionExists)
+check_function_exists (memalign       HAVE_MEMALIGN)
+check_function_exists (posix_memalign HAVE_POSIX_MEMALIGN)
+
 set (GFC_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
+
+configure_file("${CMAKE_SOURCE_DIR}/include/config.h.cmake.in"
+               "${CMAKE_BINARY_DIR}/config.h")
 
 add_subdirectory (src)
 
@@ -25,5 +98,3 @@ endif (BUILD_TESTS)
 # NOTE(rmeusel): we are currently not compiling the 'tools' and 'examples',
 #                since we are not interested in using the command line tools
 
-configure_file("${CMAKE_SOURCE_DIR}/include/config.h.in"
-               "${CMAKE_BINARY_DIR}/config.h")
