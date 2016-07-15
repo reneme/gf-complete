@@ -68,3 +68,6 @@ tools/gf_methods
 tools/gf_mult
 tools/gf_poly
 tools/gf_time
+
+# build directory for CMake builds
+**/build/*
