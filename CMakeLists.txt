@@ -67,6 +67,9 @@ check_function_exists (posix_memalign HAVE_POSIX_MEMALIGN)
 
 set (GFC_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
+configure_file("${CMAKE_SOURCE_DIR}/include/config.h.cmake.in"
+               "${CMAKE_BINARY_DIR}/config.h")
+
 add_subdirectory (src)
 
 if (BUILD_TESTS)
@@ -76,5 +79,3 @@ endif (BUILD_TESTS)
 # NOTE(rmeusel): we are currently not compiling the 'tools' and 'examples',
 #                since we are not interested in using the command line tools
 
-configure_file("${CMAKE_SOURCE_DIR}/include/config.h.in"
-               "${CMAKE_BINARY_DIR}/config.h")
