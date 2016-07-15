@@ -18,7 +18,7 @@ macro( CheckCPUID )
   if(NOT DEFINED CPUID_CACHED)
     try_run(CPUID_FLAG CPUID_COMPILE_RESULT
             ${CMAKE_BINARY_DIR}
-            ${CMAKE_SOURCE_DIR}/cmake/cmcpuid.c)
+            ${CMAKE_SOURCE_DIR}/cmake/cpuid_simd.c)
 
     if(NOT ${CPUID_COMPILE_RESULT})
       message(FATAL_ERROR "Failed to compile CPUID check binary")
@@ -29,7 +29,9 @@ macro( CheckCPUID )
     set(SUPPORT_dbg TRUE CACHE INTERNAL "Support for debug build")
     set(SUPPORT_std TRUE CACHE INTERNAL "Support for standard build")
 
-    # NOTE: These flags must match the numbers in cmcpuid.c
+    set(CPUID_CACHED TRUE CACHE INTERNAL "Whether CPUID has run")
+
+    # NOTE: These flags must match the numbers in cpuid_simd.c
     if(${CPUID_FLAG} GREATER 1)
       set(SUPPORT_sse3 TRUE CACHE INTERNAL "Local CPU support for SSE3")
       message(STATUS "CPU supports SSE3")
