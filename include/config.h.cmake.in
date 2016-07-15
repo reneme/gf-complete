@@ -10,5 +10,11 @@
 #cmakedefine HAVE_SSE4_PCLMUL
 #cmakedefine HAVE_SSE4_1
 #cmakedefine HAVE_SSE4_2
+#cmakedefine INTEL_SSE
+#cmakedefine INTEL_SSE2
+#cmakedefine INTEL_SSE3
+#cmakedefine INTEL_SSSE3
+#cmakedefine INTEL_SSE4
+#cmakedefine INTEL_SSE4_PCLMUL
 #cmakedefine HAVE_AVX
 #cmakedefine HAVE_AVX2

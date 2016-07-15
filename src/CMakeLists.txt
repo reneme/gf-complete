@@ -19,3 +19,4 @@ set (GFC_LIBRARY_SOURCES
 
 add_library(gf_complete ${GFC_LIBRARY_SOURCES})
 target_include_directories(gf_complete PUBLIC ${GFC_INCLUDE_DIR})
+target_compile_options(gf_complete PUBLIC ${SIMD_COMPILER_FLAGS})
