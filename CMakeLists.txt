@@ -6,13 +6,59 @@ set (GFC_MAJOR_VERSION 1)
 set (GFC_MINOR_VERSION 0)
 set (GFC_PATCH_VERSION 0)
 
+set (CMAKE_MODULE_PATH  "${CMAKE_SOURCE_DIR}/cmake/modules")
+
 option (BUILD_TESTS "Build the ${PROJECT_NAME} test binaries" OFF)
+option (WITH_SSE    "Enables SSEx SIMD extensions"            ON)
+option (WITH_AVX    "Enables AVXx SIMD extensions"            OFF)
 
 set (GFC_VERSION_STRING
      "${GFC_MAJOR_VERSION}.${GFC_MINOR_VERSION}.${GFC_PATCH_VERSION}")
 
 message (STATUS "Running CMake version ${CMAKE_VERSION}")
 message (STATUS "Running CMake for ${PROJECT_NAME} ${DVAULT_VERSION_STRING}")
+
+# gather information about CPU's SIMD features
+include (CheckCPUID)
+checkCPUID()
+
+if (WITH_SSE)
+  # we assume MMX, SEE and SSE2 support for all target platforms
+  message (STATUS "Enabling MMX support")
+  set (HAVE_MMX)
+  message (STATUS "Enabling SSE support")
+  set (HAVE_SSE)
+  message (STATUS "Enabling SSE 2 support")
+  set (HAVE_SSE2)
+
+  if (SUPPORT_sse3)
+    message (STATUS "Enabling SSE 3 support")
+    set (HAVE_SSE3)
+  endif (SUPPORT_sse3)
+  if (SUPPORT_sse41)
+    message (STATUS "Enabling SSE 4.1 support")
+    set (HAVE_SSE41)
+  endif (SUPPORT_sse41)
+  if (SUPPORT_sse42)
+    message (STATUS "Enabling SSE 4.2 support")
+    set (HAVE_SSE42)
+  endif (SUPPORT_sse42)
+else (WITH_SSE)
+  message (STATUS "Disabling SSE instruction set altogether")
+endif (WITH_SSE)
+
+if (WITH_AVX)
+  if (SUPPORT_avx1)
+    message (STATUS "Enabling AVX 1 support")
+    set (HAVE_AVX)
+  endif (SUPPORT_avx1)
+  if (SUPPORT_avx2)
+    message (STATUS "Enabling AVX 2 support")
+    set (HAVE_AVX2)
+  endif (SUPPORT_avx2)
+else (WITH_AVX)
+  message (STATUS "Disabling AVX instruction set altogether")
+endif (WITH_AVX)
 
 set (GFC_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 
