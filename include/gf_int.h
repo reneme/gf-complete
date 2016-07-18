@@ -15,6 +15,12 @@
 
 #include <string.h>
 
+// Windows compatibility workaround (bzero is not defined on windows)
+// TODO(rmeusel): natively replace deprecated bzero() by memset()
+#ifdef _WIN32
+static void bzero(void *buffer, size_t n) { memset(buffer, 0, n); }
+#endif
+
 extern void     timer_start (double *t);
 extern double   timer_split (const double *t);
 extern void     galois_fill_random (void *buf, int len, unsigned int seed);
