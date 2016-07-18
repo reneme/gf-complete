@@ -18,7 +18,7 @@ macro( CheckCPUID )
   if(NOT DEFINED CPUID_CACHED)
     try_run(CPUID_FLAG CPUID_COMPILE_RESULT
             ${CMAKE_BINARY_DIR}
-            ${CMAKE_SOURCE_DIR}/cmake/cpuid_simd.c)
+            ${CMAKE_SOURCE_DIR}/cmake/cpuid_simd.cpp)
 
     if(NOT ${CPUID_COMPILE_RESULT})
       message(FATAL_ERROR "Failed to compile CPUID check binary")
@@ -26,7 +26,7 @@ macro( CheckCPUID )
 
     try_run(PCLMUL_FLAG PCLMUL_COMPILE_RESULT
             ${CMAKE_BINARY_DIR}
-            ${CMAKE_SOURCE_DIR}/cmake/cpuid_pclmul.c)
+            ${CMAKE_SOURCE_DIR}/cmake/cpuid_pclmul.cpp)
 
     if(NOT ${PCLMUL_COMPILE_RESULT})
       message(FATAL_ERROR "Failed to compile CPUID PCLMUL check binary")

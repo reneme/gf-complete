@@ -7,11 +7,10 @@
  * Please see distribution for license.
  */
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <stdio.h>
 
+#include "cpuid.h"
 
 /**
  * The supported instruction set on this machine for use in other functions.
@@ -48,50 +47,36 @@ instructions_available getSupportedInstructionSet() {
     probe07_AVX2     = 1<<5
   };
 
-  // the eax register
-  int32_t EAX;
-  // contends of the returned register
-  int32_t supported;
+  CPUID cpuid_EAX1(0x00000001);
+  CPUID cpuid_EAX7(0x00000007);
 
-  // Call cpuid with eax=0x00000001 and get ecx
-  EAX = 0x00000001;
-  __asm__("cpuid"
-        :"=c"(supported)         // %ecx contains large feature flag set
-        :"0"(EAX)                // call with 0x1
-        :"%eax","%ebx","%edx");  // clobbered
-
-  if(supported & probe01_AVX1) // we have at least AVX1
+  if(cpuid_EAX1.ECX() & probe01_AVX1) // we have at least AVX1
   {
-    EAX = 0x00000007;
-    __asm__("cpuid"
-          :"=b"(supported)         // %ebx contains feature flag AVX2
-          :"0"(EAX)                // call with 0x7
-          :"%eax","%ecx","%edx");  // clobbered
-
-    if(supported & probe07_AVX2) // we have at least AVX2
+    if(cpuid_EAX7.EBX() & probe07_AVX2) // we have at least AVX2
     {
       printf("AVX2 SUPPORTED\n");
       return supports_AVX2;
     }
+
     printf("AVX1 SUPPORTED\n");
     return supports_AVX1;
   }
-  else if(supported & probe01_SSE_4_2) // we have at least SSE4.2
+  else if(cpuid_EAX1.ECX() & probe01_SSE_4_2) // we have at least SSE4.2
   {
     printf("SSE4.2 SUPPORTED\n");
     return supports_SSE42;
   }
-  else if(supported & probe01_SSE_4_1) // we have at least SSE4.1
+  else if(cpuid_EAX1.ECX() & probe01_SSE_4_1) // we have at least SSE4.1
   {
     printf("SSE4.1 SUPPORTED\n");
     return supports_SSE41;
   }
-  else if(supported & probe01_SSSE_3)
+  else if(cpuid_EAX1.ECX() & probe01_SSSE_3)
   {
     printf("SSSE3 SUPPORTED");
     return supports_SSSE3;
   }
-  else if(supported & probe01_SSE_3)
+  else if(cpuid_EAX1.ECX() & probe01_SSE_3)
   {
     printf("SSE3 SUPPORTED");
     return supports_SSE3;
