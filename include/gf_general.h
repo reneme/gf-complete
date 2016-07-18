@@ -14,7 +14,6 @@
 #pragma once
 
 #include <stdio.h>
-#include <getopt.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
