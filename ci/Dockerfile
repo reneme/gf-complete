@@ -1,4 +1,4 @@
 FROM ubuntu:16.04
 
-RUN apt-get update
-RUN apt-get install -y cmake gcc g++
+RUN apt-get update && \
+    apt-get install -y cmake gcc g++
