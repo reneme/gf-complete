@@ -11,3 +11,6 @@ SCRIPT_LOCATION=$(cd "$(dirname "$0")"; pwd)
 
 cd $BUILD_DIR
 make install
+
+cd $INSTALL_DIR
+tar czvf gf-complete.tar.gz *
