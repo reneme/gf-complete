@@ -17,9 +17,9 @@ New-Item -ItemType directory -Path $INSTALL_DIR
 
 Set-Location -Path $BUILD_DIR
 
-cmake -G "Visual Studio 14 2015 Win64" `
-      -DBUILD_TESTS=yes                `
-      -DWITH_SSE=no                    `
-      -DWITH_AVX=no                    `
-      -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR\$INSTALL_PREFIX"
+cmake -G "Visual Studio 14 2015 Win64"                      `
+      -DBUILD_TESTS=yes                                     `
+      -DWITH_SSE=no                                         `
+      -DWITH_AVX=no                                         `
+      -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR\$INSTALL_PREFIX" `
       $SOURCE_DIR
