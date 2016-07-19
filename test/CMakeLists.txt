@@ -21,5 +21,5 @@ add_test(NAME "w:128"
          COMMAND $<TARGET_FILE:${PROJECT_UNIT_TEST_NAME}> "128" "A" "-1" "-")
 
 add_custom_target(check
-                  COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+                  COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure --build-config $<CONFIG>
                   DEPENDS ${PROJECT_UNIT_TEST_NAME})
