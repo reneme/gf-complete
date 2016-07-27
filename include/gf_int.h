@@ -5,8 +5,8 @@
  *
  * gf_int.h
  *
- * Internal code for Galois field routines.  This is not meant for 
- * users to include, but for the internal GF files to use. 
+ * Internal code for Galois field routines.  This is not meant for
+ * users to include, but for the internal GF files to use.
  */
 
 #pragma once
