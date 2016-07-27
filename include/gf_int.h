@@ -5,8 +5,8 @@
  *
  * gf_int.h
  *
- * Internal code for Galois field routines.  This is not meant for 
- * users to include, but for the internal GF files to use. 
+ * Internal code for Galois field routines.  This is not meant for
+ * users to include, but for the internal GF files to use.
  */
 
 #pragma once
@@ -14,12 +14,6 @@
 #include "gf_complete.h"
 
 #include <string.h>
-
-// Windows compatibility workaround (bzero is not defined on windows)
-// TODO(rmeusel): natively replace deprecated bzero() by memset()
-#ifdef _WIN32
-static void bzero(void *buffer, size_t n) { memset(buffer, 0, n); }
-#endif
 
 extern void     timer_start (double *t);
 extern double   timer_split (const double *t);
